@@ -1,0 +1,11 @@
+1-Allez dans votre dossier projet symfony generer par symfony.phar.
+
+2-copier coller le fichier composer.phar et executer avec la ligne de commande suivante
+php composer.phar dump-autoload "a executer pour chaque nouveau bundle créer avec console generate:bundle"
+
+3-si des erreurs twig a lieu vérifier la syntaxe dans le controlleur du bundle, car il faudras peut etre adapter la syntaxe EX:
+avec un bundle qui a le namespace (OC/PlatformBundle)
+
+la ligne:  return $this->render('OCPlatformBundle:Default:index.html.twig');
+
+peut devoir etre ecris comme ceci: return $this->render('@OCPlatform/Default/index.html.twig');
