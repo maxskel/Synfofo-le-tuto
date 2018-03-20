@@ -1,0 +1,25 @@
+<html>
+	{% include '@OCPlatform/Section/header.html.twig' %}
+
+	<body>
+            <!-- boucle sur articles -->
+			{% for article in articles %}
+            <ul>
+                  <li>
+                         <div>
+                                  <div>
+                                                 <h1>{{article.title}}</h1>
+                                  </div>
+                                  <div>
+                                                {{article.content | raw}}
+                                  </div>
+                          </div>
+                  </li>
+             </ul>
+			 {% endfor %}
+		<!-- footer.html.twig -->
+		{% include '@OCPlatform/Section/footer.html.twig' %}
+		
+    </body>
+	
+</html>

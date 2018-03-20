@@ -3,9 +3,22 @@
 2-copier coller le fichier composer.phar et executer avec la ligne de commande suivante
 php composer.phar dump-autoload "a executer pour chaque nouveau bundle créer avec console generate:bundle"
 
+si dump-autoload renvoy une erreur verifier que cette element est comme suis dans le fichier racine composer.json
+"psr-4": {
+ "":"src/"
+ }
+
 3-si des erreurs twig a lieu vérifier la syntaxe dans le controlleur du bundle, car il faudras peut etre adapter la syntaxe EX:
 avec un bundle qui a le namespace (OC/PlatformBundle)
 
 la ligne:  return $this->render('OCPlatformBundle:Default:index.html.twig');
 
 peut devoir etre ecris comme ceci: return $this->render('@OCPlatform/Default/index.html.twig');
+
+
+4- si $this->get("templing"); ne fonctionne pas ajouter dans le fichier app/config.yml
+dans la section framework:
+
+templating:
+
+    engine: ['twig']
