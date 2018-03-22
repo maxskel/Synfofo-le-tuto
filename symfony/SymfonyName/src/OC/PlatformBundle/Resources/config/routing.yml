@@ -1,7 +1,5 @@
-oc_platform_homepage:
-    path:     /
-    defaults: { _controller: OCPlatformBundle:Default:index }
-
 section_home:
-    path: /home
-    defaults: {_controller: OCPlatformBundle:Section:home}
+    path: /game
+    defaults:
+        _controller: OCPlatformBundle:Section:game
+        

@@ -2,21 +2,55 @@
 	{% include '@OCPlatform/Section/header.html.twig' %}
 
 	<body>
-            <!-- boucle sur articles -->
-			{% for article in articles %}
-            <ul>
-                  <li>
-                         <div>
-                                  <div>
-                                                 <h1>{{article.title}}</h1>
-                                  </div>
-                                  <div>
-                                                {{article.content | raw}}
-                                  </div>
-                          </div>
-                  </li>
-             </ul>
-			 {% endfor %}
+            <h1> Jeux des nombres! Up and Down ! </h1>
+			<h3> Cliquer sur une case pour deviner comment jouer :D </h3>
+			<form id="formSubmit" method="post" action="#">
+				<input style="display: none;" id="idValue" type="text" name="text" value="0" />
+				<input style="display: none;" id="randomNumber" type="text" name="randomNumber" value="{{randomNumber}}" />
+				<input style="display: none;" type="submit" name="envoi" value="envoyer">
+			</form>
+			
+			<!-- section jeux -->
+			{% for i in 0..9 %}
+				{%for i2 in 0..9%}
+				
+					<div onclick="submitForm( {{i2+(i*10)}} )" id="{{i2+(i*10)}}" style="display: inline-block; border-style: solid; border-width: 3px; width: 30px; height: 30px;" > {{i2+(i*10)}} </div>
+					
+				{%endfor%}
+				<br>
+			{%endfor%}
+			
+			
+			
+			<script>
+				var submit;
+			
+			
+				window.onload = function(){
+					var blockId = document.getElementById("{{text}}");
+					blockId.style = "background-color: red;"+"display: inline-block; border-style: solid; border-width: 3px; width: 30px; height: 30px;";
+				
+					submitForm = function(id){
+						var form = document.getElementById("formSubmit");
+						
+						document.getElementById("idValue").value = id;
+						
+						if( {{randomNumber}} > id)
+							alert("Plus haut! ");
+						else if( {{randomNumber}} < id)
+							alert("Plus bas!");
+						else{
+							alert("Bravo tu as gagner le jeu!");
+							document.getElementById("idValue").value = -1;
+						}
+						
+						form.submit();
+					}
+				
+				}
+			</script>
+			
+			
 		<!-- footer.html.twig -->
 		{% include '@OCPlatform/Section/footer.html.twig' %}
 		
