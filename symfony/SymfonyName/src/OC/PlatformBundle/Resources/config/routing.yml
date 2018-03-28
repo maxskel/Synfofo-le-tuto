@@ -1,5 +1,0 @@
-section_home:
-    path: /game
-    defaults:
-        _controller: OCPlatformBundle:Section:game
-        

@@ -1,0 +1,8 @@
+oc_article_homepage:
+    path:     /
+    defaults: { _controller: OCArticleBundle:Default:index }
+
+oc_article_control:
+    path: /article
+    defaults:
+        _controller: OCArticleBundle:Article:index

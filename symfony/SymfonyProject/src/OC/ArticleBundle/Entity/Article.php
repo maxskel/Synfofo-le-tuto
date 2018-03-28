@@ -1,0 +1,97 @@
+<?php
+
+namespace OC\ArticleBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Article
+ *
+ * @ORM\Table(name="article")
+ * @ORM\Entity(repositoryClass="OC\ArticleBundle\Repository\ArticleRepository")
+ */
+class Article
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255)
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="string", type="text")
+     */
+    private $string;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Article
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set string
+     *
+     * @param string $string
+     *
+     * @return Article
+     */
+    public function setString($string)
+    {
+        $this->string = $string;
+
+        return $this;
+    }
+
+    /**
+     * Get string
+     *
+     * @return string
+     */
+    public function getString()
+    {
+        return $this->string;
+    }
+}
+

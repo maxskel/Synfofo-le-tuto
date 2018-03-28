@@ -1,0 +1,7 @@
+oc_article:
+    resource: "@OCArticleBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
