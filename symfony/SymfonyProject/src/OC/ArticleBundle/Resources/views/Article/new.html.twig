@@ -1,0 +1,20 @@
+{# empty Twig template #}
+<html>
+    <head>
+        
+    </head>
+    
+    <body style="text-align: center; margin: auto;">
+        
+        {% if app.session.flashBag.has("formValidate") %}
+            
+            <h1> Message flash: {{ app.session.flashBag.get("formValidate")[0] }} </h1>
+            
+        {% endif %}
+        
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </body>
+    
+</html>

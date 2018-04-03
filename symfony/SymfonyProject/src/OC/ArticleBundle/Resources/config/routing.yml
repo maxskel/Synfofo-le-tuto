@@ -6,3 +6,11 @@ oc_article_control:
     path: /article
     defaults:
         _controller: OCArticleBundle:Article:index
+
+oc_article_create:
+    path: /article/new
+    controller: OC\ArticleBundle\Controller\ArticleController::newAction
+    
+oc_article_edit:
+    path: /article/edit/{id}
+    controller: OC\ArticleBundle\Controller\ArticleController::editAction
