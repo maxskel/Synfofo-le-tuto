@@ -10,8 +10,8 @@ namespace OC\ArticleBundle\Controller;
 
 use DateTime;
 use OC\ArticleBundle\Entity\Article;
+use OC\ArticleBundle\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,12 +28,14 @@ class ArticleController extends Controller{
     //put your code here
     
     public function editAction($id , Request $request){
+        
         $dm = $this->getDoctrine()->getManager();
         $dr = $dm->getRepository("OC\ArticleBundle\Entity\Article");
         
-        $article1 = $dr->find($id);
+        /* @var $article Article */
+        $article = $dr->find($id);
         
-        $form = $this->createFormBuilder($article1)
+        $form = $this->createFormBuilder($article)
             ->add('title', TextType::class)
             ->add('string', TextType::class)
             ->add('save', SubmitType::class, array('label' => 'Create Task'))
@@ -46,10 +48,13 @@ class ArticleController extends Controller{
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
             
-            $article =  $article1;
             
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getString() );
+            
+            /* Test ORM OneToOne / ManyToOne / ManyToMany */
+            
+            
             
             $doctrineManager->persist($article);
             $doctrineManager->flush();
@@ -59,6 +64,21 @@ class ArticleController extends Controller{
         }
         
          return $this->render("@OCArticle/Article/edit.html.twig", [ 'form' => $form->createView()]);
+    }
+    
+    public function removeAction($id, Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $article = $em->find("OC\ArticleBundle\Entity\Article", $id);
+        
+        if($article != null){
+            $em->remove($article);
+            //$em->persist($article);
+            $em->flush();
+        }else{
+            return new Response("Cette article n'existe pas!");
+        }
+        
+        return new Response("Article suprimmer! ID: ".$id." par l'admin");
     }
     
     public function newAction(Request $request){
@@ -83,6 +103,11 @@ class ArticleController extends Controller{
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getDescription() );
             
+            $article->setImage(new Image());
+            $imgArticle = $article->getImage();
+            $imgArticle->setAlt("Image de cette article lol");
+            $imgArticle->setUrl("https://blaguesquebec882.files.wordpress.com/2017/04/cropped-cropped-normal-jpg2.png?w=200");
+            
             $doctrineManager->persist($article);
             $doctrineManager->flush();
             
@@ -96,7 +121,12 @@ class ArticleController extends Controller{
     public function indexAction(Request $request){
         
         $em = $this->getDoctrine()->getManager();
+        
+        $repoImg = $em->getRepository("OC\ArticleBundle\Entity\Image")->findAll()[0];
+        $repoArray = $em->getRepository("OC\ArticleBundle\Entity\Article")->findBy(["image" => $repoImg]);
         $repo = $em->getRepository("OC\ArticleBundle\Entity\Article");
+        
+        
         
         $article = new Article();
         $articles = $repo->findAll();
@@ -106,9 +136,12 @@ class ArticleController extends Controller{
         
         foreach( $articles as $unit ){
             
-                $final .= "<h1> ".$unit->getTitle()." </h1>";
+                $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()."</h1>";
            
                 $final .= "<p>". $unit->getString() ." </p>";
+                
+                if($unit->getImage() != null)
+                    $final .= "<img src='". $unit->getImage()->getUrl() ."' />";
             
         }
         

@@ -1,3 +1,13 @@
+login:
+    path: /login
+    controller: OC\ArticleBundle\Controller\LoginController::loginAction
+
+login_check:
+    path: /login_check
+    
+logout:
+    path: /logout
+
 oc_article_homepage:
     path:     /
     defaults: { _controller: OCArticleBundle:Default:index }
@@ -14,3 +24,7 @@ oc_article_create:
 oc_article_edit:
     path: /article/edit/{id}
     controller: OC\ArticleBundle\Controller\ArticleController::editAction
+    
+oc_article_remove:
+    path: /article/remove/{id}
+    controller: OC\ArticleBundle\Controller\ArticleController::removeAction

@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     *@ORM\ManyToOne(targetEntity="OC\ArticleBundle\Entity\Image", cascade={"persist"})
+     *@ORM\OneToOne(targetEntity="OC\ArticleBundle\Entity\Image", cascade={"persist"})
      * @var type 
      */
     private $image;
@@ -99,28 +99,5 @@ class Article
     {
         return $this->string;
     }
-
-    /**
-     * Set image
-     *
-     * @param \OC\ArticleBundle\Entity\Image $image
-     *
-     * @return Article
-     */
-    public function setImage(\OC\ArticleBundle\Entity\Image $image = null)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return \OC\ArticleBundle\Entity\Image
-     */
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
 }
+
