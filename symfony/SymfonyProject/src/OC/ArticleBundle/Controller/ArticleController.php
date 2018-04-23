@@ -34,6 +34,20 @@ class ArticleController extends Controller{
         
         /* @var $article Article */
         $article = $dr->find($id);
+
+        $user = null;
+
+        if($this->getUser()){
+            $user = $this->getUser()->getUsername();
+        }
+
+        if( $user == null){
+            $user = "anon";
+        }
+
+        if($user != $article->getUser()){
+            throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
+        }
         
         $form = $this->createFormBuilder($article)
             ->add('title', TextType::class)
@@ -51,7 +65,7 @@ class ArticleController extends Controller{
             
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getString() );
-            
+
             /* Test ORM OneToOne / ManyToOne / ManyToMany */
             
             
@@ -69,7 +83,22 @@ class ArticleController extends Controller{
     public function removeAction($id, Request $request){
         $em = $this->getDoctrine()->getManager();
         $article = $em->find("OC\ArticleBundle\Entity\Article", $id);
-        
+
+        $user = null;
+
+        if($this->getUser()){
+            $user = $this->getUser()->getUsername();
+        }
+
+        if( $user == null){
+            $user = "anon";
+        }
+
+        if($user != $article->getUser()){
+            throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
+        }
+
+
         if($article != null){
             $em->remove($article);
             //$em->persist($article);
@@ -102,7 +131,19 @@ class ArticleController extends Controller{
             
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getDescription() );
-            
+
+            $user = null;
+
+            if($this->getUser()){
+                $user = $this->getUser()->getUsername();
+            }
+
+            if( $user == null){
+                $user = "anon";
+            }
+
+            $article->setUser( $user );
+
             $article->setImage(new Image());
             $imgArticle = $article->getImage();
             $imgArticle->setAlt("Image de cette article lol");
@@ -133,10 +174,11 @@ class ArticleController extends Controller{
         
         $final="";
         $i = 0;
+
         
         foreach( $articles as $unit ){
             
-                $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()."</h1>";
+                $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()." User: ".$unit->getUser()."</h1>";
            
                 $final .= "<p>". $unit->getString() ." </p>";
                 

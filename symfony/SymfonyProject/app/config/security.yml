@@ -3,15 +3,15 @@
 security:
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext
+        OC\ArticleBundle\Entity\User: plaintext
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory:
-                users:
-                    user: {password: user, roles:[ 'ROLE_USER' ]}
-                    admin: {password: admin, roles:[ 'ROLE_ADMIN' ]}
+        main:
+            entity:
+                class: OC\ArticleBundle\Entity\User
+                property: username
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -19,10 +19,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         
-        
         main:
             pattern: ^/
             anonymous: true
+            provider: main
             form_login:
                 login_path: login
                 check_path: login_check
@@ -38,5 +38,5 @@ security:
             #form_login: ~
     access_control:
         - {path: ^/article/new , roles: ROLE_USER}
-        - {path: ^/article/edit , roles: ROLE_ADMIN}
+        - {path: ^/article/edit , roles: ROLE_USER}
         - {path: ^/article/remove , roles: ROLE_ADMIN}

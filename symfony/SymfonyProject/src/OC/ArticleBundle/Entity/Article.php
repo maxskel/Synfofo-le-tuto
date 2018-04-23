@@ -41,6 +41,12 @@ class Article
      */
     private $string;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user", type="string", length=255)
+     */
+    private $user;
 
     /**
      * Get id
@@ -122,5 +128,21 @@ class Article
     public function getImage(): ?Image
     {
         return $this->image;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 }
