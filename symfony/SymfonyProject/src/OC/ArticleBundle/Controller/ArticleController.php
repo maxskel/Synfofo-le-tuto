@@ -11,6 +11,7 @@ namespace OC\ArticleBundle\Controller;
 use DateTime;
 use OC\ArticleBundle\Entity\Article;
 use OC\ArticleBundle\Entity\Image;
+use OC\ArticleBundle\Task\TaskArticle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,11 +30,11 @@ class ArticleController extends Controller{
     
     public function editAction($id , Request $request){
         
-        $dm = $this->getDoctrine()->getManager();
-        $dr = $dm->getRepository("OC\ArticleBundle\Entity\Article");
+        $doctrineManager = $this->getDoctrine()->getManager();
+        $doctrineRepository = $doctrineManager->getRepository(Article::class);
         
         /* @var $article Article */
-        $article = $dr->find($id);
+        $article = $doctrineRepository->find($id);
 
         $user = null;
 
@@ -45,7 +46,7 @@ class ArticleController extends Controller{
             $user = "anon";
         }
 
-        if($user != $article->getUser()){
+        if($user != $article->getUser()->getUsername()){
             throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
         }
         
@@ -61,15 +62,11 @@ class ArticleController extends Controller{
             
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
-            
-            
+
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getString() );
 
             /* Test ORM OneToOne / ManyToOne / ManyToMany */
-            
-            
-            
             $doctrineManager->persist($article);
             $doctrineManager->flush();
             
@@ -81,8 +78,8 @@ class ArticleController extends Controller{
     }
     
     public function removeAction($id, Request $request){
-        $em = $this->getDoctrine()->getManager();
-        $article = $em->find("OC\ArticleBundle\Entity\Article", $id);
+        $doctrineManager = $this->getDoctrine()->getManager();
+        $article = $doctrineManager->find("OC\ArticleBundle\Entity\Article", $id);
 
         $user = null;
 
@@ -94,15 +91,15 @@ class ArticleController extends Controller{
             $user = "anon";
         }
 
-        if($user != $article->getUser()){
+        if($user != $article->getUser()->getUsername()){
             throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
         }
 
 
         if($article != null){
-            $em->remove($article);
-            //$em->persist($article);
-            $em->flush();
+            $doctrineManager->remove($article);
+            //$doctrineManager->persist($article);
+            $doctrineManager->flush();
         }else{
             return new Response("Cette article n'existe pas!");
         }
@@ -112,7 +109,7 @@ class ArticleController extends Controller{
     
     public function newAction(Request $request){
         
-        $task = new Task();
+        $task = new TaskArticle();
         
         $form = $this->createFormBuilder($task)
             ->add('title', TextType::class)
@@ -142,7 +139,7 @@ class ArticleController extends Controller{
                 $user = "anon";
             }
 
-            $article->setUser( $user );
+            $article->setUser( $this->getUser() );
 
             $article->setImage(new Image());
             $imgArticle = $article->getImage();
@@ -161,67 +158,29 @@ class ArticleController extends Controller{
     
     public function indexAction(Request $request){
         
-        $em = $this->getDoctrine()->getManager();
-        
-        $repoImg = $em->getRepository("OC\ArticleBundle\Entity\Image")->findAll()[0];
-        $repoArray = $em->getRepository("OC\ArticleBundle\Entity\Article")->findBy(["image" => $repoImg]);
-        $repo = $em->getRepository("OC\ArticleBundle\Entity\Article");
-        
-        
-        
+        $doctrineManager = $this->getDoctrine()->getManager();
+        $repositoryArticle = $doctrineManager->getRepository("OC\ArticleBundle\Entity\Article");
+
         $article = new Article();
-        $articles = $repo->findAll();
+        $articles = $repositoryArticle->findAll();
         
         $final="";
         $i = 0;
 
-        
         foreach( $articles as $unit ){
             
-                $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()." User: ".$unit->getUser()."</h1>";
-           
-                $final .= "<p>". $unit->getString() ." </p>";
-                
-                if($unit->getImage() != null)
-                    $final .= "<img src='". $unit->getImage()->getUrl() ."' />";
-            
+            $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()." User: ".$unit->getUser()->getUsername()."</h1>";
+
+            $final .= "<p>". $unit->getString() ." </p>";
+
+            if($unit->getImage() != null)
+                $final .= "<img src='". $unit->getImage()->getUrl() ."' />";
+
+            $final .= '<form methos="GET" action="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/edit/'.$unit->getId().'">
+                            <input type="submit" value="Editer Article" />
+                        </form>';
         }
         
         return new Response($final);
-    }
-}
-
-
-class Task
-{
-    protected $title;
-    protected $description;
-
-    public function setTitle($title){
-        $this->title = $title;
-    }
-    
-    public function getTitle(){
-        return $this->title;
-    }
-    
-    public function setDescription($description){
-        $this->description = $description;
-    }
-    
-    public function getDescription(){
-        return $this->description;
-    }
-    
-    
-
-    public function getDueDate()
-    {
-        return $this->dueDate;
-    }
-
-    public function setDueDate(DateTime $dueDate = null)
-    {
-        $this->dueDate = $dueDate;
     }
 }

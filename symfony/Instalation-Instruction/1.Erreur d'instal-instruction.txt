@@ -1,9 +1,0 @@
-﻿Si des erreurs ssl a lieu lors de l'installation verifier que:
-
-1: La bonne verssion de php est sélectionner dans wamp.
-
-2: Que les ligne suivente son bien dans le fichier php.ini de la verssion php choisi
-	-> openssl.cafile="c:/wamp64/www/LienFichierCertif/cacert.pem"
-	-> curl.cainfo = "c:/wamp64/www/LienFichierCertif/cacert.pem"
-	
-3: De modifier le php.ini du dossier de la verssion php "wamp/bin/php/phpVerssion" et non le php.ini de wamp!

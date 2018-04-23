@@ -42,9 +42,9 @@ class Article
     private $string;
 
     /**
-     * @var string
+     * @var object
      *
-     * @ORM\Column(name="user", type="string", length=255)
+     * @ORM\Column(name="user", type="object")
      */
     private $user;
 
@@ -131,17 +131,17 @@ class Article
     }
 
     /**
-     * @return string
+     * @return object
      */
-    public function getUser()
+    public function getUser() : User
     {
         return $this->user;
     }
 
     /**
-     * @param string $user
+     * @param object $user
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }

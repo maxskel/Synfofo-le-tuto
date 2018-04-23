@@ -1,1 +1,0 @@
-Copier les fichier Composer.phar et Symfony.phar a la racine du projet symfony et les configurer dans netbeans a cet endroi pour etre compatible avec lide
