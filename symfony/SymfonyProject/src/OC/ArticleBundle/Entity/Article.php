@@ -42,9 +42,7 @@ class Article
     private $string;
 
     /**
-     * @var object
-     *
-     * @ORM\Column(name="user", type="object")
+     * @ORM\ManyToOne(targetEntity="OC\ArticleBundle\Entity\User" , cascade={"persist"})
      */
     private $user;
 
@@ -131,15 +129,13 @@ class Article
     }
 
     /**
-     * @return object
      */
-    public function getUser() : User
+    public function getUser() : ?User
     {
         return $this->user;
     }
 
     /**
-     * @param object $user
      */
     public function setUser(User $user)
     {

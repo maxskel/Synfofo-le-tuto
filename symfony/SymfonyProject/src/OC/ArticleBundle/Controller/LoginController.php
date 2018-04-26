@@ -27,18 +27,15 @@ class LoginController extends Controller{
 public function loginAction(Request $request){
 
         $user = $this->getUser();
-        $error = "Pas derreur";
+        $error = "Pas d'erreur";
         $lastUserName = "null";
 
-        if($user == null){
-            $error = "ERROR: Utilisateur anon";
-        }else{
-            $error = "ERROR: vrais utilisateur autentifier derierre parfeu";
+        if($user != null){
             $lastUserName = $user->getUsername();
         }
 
-        $authenticationUtils = $this->get('security.authentication_utils');
 
+        $authenticationUtils = $this->get('security.authentication_utils');
         return $this->render("@OCArticle/Login/login.html.twig", [ "error" => $authenticationUtils->getLastAuthenticationError() , "last_username" => $authenticationUtils->getLastUsername()]);
     }
     
@@ -53,12 +50,7 @@ public function loginAction(Request $request){
 
     public function createUserAction(Request $request){
         $task = new TaskCreateUser();
-
-        $form = $this->createFormBuilder($task)
-            ->add('_username', TextType::class)
-            ->add('_password', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
-            ->getForm();
+        $form = $this->createForm(TaskCreateUser::class, $task);
 
         $form->handleRequest($request);
 
@@ -66,6 +58,7 @@ public function loginAction(Request $request){
 
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
+
             $user = new User();
 
             $user->setUsername($form->getData()->getUsername());

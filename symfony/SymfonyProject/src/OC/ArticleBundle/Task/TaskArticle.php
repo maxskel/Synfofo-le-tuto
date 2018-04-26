@@ -9,10 +9,25 @@
 namespace OC\ArticleBundle\Task;
 
 
-class TaskArticle
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class TaskArticle extends AbstractType
 {
+
     protected $title;
     protected $description;
+
+
+    public function buildForm(FormBuilderInterface $formBuilder, array $option){
+        $formBuilder
+            ->add("title" , TextType::class)
+            ->add("description" , TextType::class)
+            ->add("save" , SubmitType::class);
+    }
+
 
     public function setTitle($title){
         $this->title = $title;
@@ -30,15 +45,4 @@ class TaskArticle
         return $this->description;
     }
 
-
-
-    public function getDueDate()
-    {
-        return $this->dueDate;
-    }
-
-    public function setDueDate(DateTime $dueDate = null)
-    {
-        $this->dueDate = $dueDate;
-    }
 }

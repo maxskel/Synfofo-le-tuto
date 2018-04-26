@@ -36,26 +36,21 @@ class ArticleController extends Controller{
         /* @var $article Article */
         $article = $doctrineRepository->find($id);
 
-        $user = null;
+        $username = null;
+        $userId = null;
 
         if($this->getUser()){
-            $user = $this->getUser()->getUsername();
+            $username = $this->getUser()->getUsername();
+            $userId = $this->getUser()->getId();
         }
 
-        if( $user == null){
-            $user = "anon";
-        }
-
-        if($user != $article->getUser()->getUsername()){
+        if($article->getUser() === null || $userId != $article->getUser()->getId()){
             throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
         }
-        
-        $form = $this->createFormBuilder($article)
-            ->add('title', TextType::class)
-            ->add('string', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
-            ->getForm();
-        
+
+        $task = new TaskArticle();
+        $form = $this->createForm(TaskArticle::class , $task);
+
         $form->handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid() ){
@@ -64,7 +59,7 @@ class ArticleController extends Controller{
             $doctrineManager = $doctrine->getManager();
 
             $article->setTitle($form->getData()->getTitle());
-            $article->setString( $form->getData()->getString() );
+            $article->setString( $form->getData()->getDescription() );
 
             /* Test ORM OneToOne / ManyToOne / ManyToMany */
             $doctrineManager->persist($article);
@@ -81,17 +76,15 @@ class ArticleController extends Controller{
         $doctrineManager = $this->getDoctrine()->getManager();
         $article = $doctrineManager->find("OC\ArticleBundle\Entity\Article", $id);
 
-        $user = null;
+        $username = null;
+        $userId = null;
 
         if($this->getUser()){
-            $user = $this->getUser()->getUsername();
+            $username = $this->getUser()->getUsername();
+            $userId = $this->getUser()->getId();
         }
 
-        if( $user == null){
-            $user = "anon";
-        }
-
-        if($user != $article->getUser()->getUsername()){
+        if($userId != $article->getUser()->getId()){
             throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
         }
 
@@ -111,11 +104,7 @@ class ArticleController extends Controller{
         
         $task = new TaskArticle();
         
-        $form = $this->createFormBuilder($task)
-            ->add('title', TextType::class)
-            ->add('description', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
-            ->getForm();
+        $form = $this->createForm( TaskArticle::class , $task );
         
         $form->handleRequest($request);
         
@@ -129,15 +118,12 @@ class ArticleController extends Controller{
             $article->setTitle($form->getData()->getTitle());
             $article->setString( $form->getData()->getDescription() );
 
-            $user = null;
+            $username = null;
 
             if($this->getUser()){
-                $user = $this->getUser()->getUsername();
+                $username = $this->getUser()->getUsername();
             }
 
-            if( $user == null){
-                $user = "anon";
-            }
 
             $article->setUser( $this->getUser() );
 
@@ -149,7 +135,7 @@ class ArticleController extends Controller{
             $doctrineManager->persist($article);
             $doctrineManager->flush();
             
-            $request->getSession()->getFlashBag()->add("formValidate","Bravo l'article (".$article->getTitle().") a bien été envoyer");
+            $request->getSession()->getFlashBag()->add("formValidate","Bravo l'article (".$article->getTitle()." de ".$this->getUser()->getUsername().") a bien été envoyer");
             
         }
         
@@ -167,18 +153,20 @@ class ArticleController extends Controller{
         $final="";
         $i = 0;
 
-        foreach( $articles as $unit ){
-            
-            $final .= "<h1> ".$unit->getTitle()." ID: ".$unit->getId()." User: ".$unit->getUser()->getUsername()."</h1>";
+        foreach( $articles as $unit ) {
 
-            $final .= "<p>". $unit->getString() ." </p>";
+            if ($unit->getUser() != null) {
+                $final .= "<h1> " . $unit->getTitle() . " ID: " . $unit->getId() . " User: " . $unit->getUser()->getUsername() . "</h1>";
 
-            if($unit->getImage() != null)
-                $final .= "<img src='". $unit->getImage()->getUrl() ."' />";
+                $final .= "<p>" . $unit->getString() . " </p>";
 
-            $final .= '<form methos="GET" action="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/edit/'.$unit->getId().'">
+                if ($unit->getImage() != null)
+                    $final .= "<img src='" . $unit->getImage()->getUrl() . "' />";
+
+                $final .= '<form methos="GET" action="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/edit/' . $unit->getId() . '">
                             <input type="submit" value="Editer Article" />
                         </form>';
+            }
         }
         
         return new Response($final);
