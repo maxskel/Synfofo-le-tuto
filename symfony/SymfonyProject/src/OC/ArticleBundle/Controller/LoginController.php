@@ -49,8 +49,8 @@ public function loginAction(Request $request){
     }
 
     public function createUserAction(Request $request){
-        $task = new TaskCreateUser();
-        $form = $this->createForm(TaskCreateUser::class, $task);
+        $user = new User();
+        $form = $this->createForm(TaskCreateUser::class, $user);
 
         $form->handleRequest($request);
 
@@ -59,10 +59,6 @@ public function loginAction(Request $request){
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
 
-            $user = new User();
-
-            $user->setUsername($form->getData()->getUsername());
-            $user->setPassword($form->getData()->getPassword());
             $user->setSalt('');
             $user->setRoles( array('ROLE_USER') );
 

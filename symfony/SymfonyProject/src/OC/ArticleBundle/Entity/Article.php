@@ -104,6 +104,17 @@ class Article
         return $this->string;
     }
 
+    public function setDescription($string){
+        $this->string = $string;
+
+        return $this;
+    }
+
+    public function getDescription()
+    {
+        return $this->string;
+    }
+
     /**
      * Set image
      *

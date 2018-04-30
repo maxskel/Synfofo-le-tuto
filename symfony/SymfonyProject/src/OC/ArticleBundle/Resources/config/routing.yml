@@ -17,9 +17,12 @@ oc_article_homepage:
     defaults: { _controller: OCArticleBundle:Default:index }
 
 oc_article_control:
-    path: /article
+    path: /article/{id}
+    controller: OC\ArticleBundle\Controller\ArticleController::indexAction
     defaults:
-        _controller: OCArticleBundle:Article:index
+        id: null
+    requirements:
+        id: \d
 
 oc_article_create:
     path: /article/new

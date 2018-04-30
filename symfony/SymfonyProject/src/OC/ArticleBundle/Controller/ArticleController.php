@@ -48,8 +48,8 @@ class ArticleController extends Controller{
             throw $this->createAccessDeniedException('Mauvais utilisateur pour larticle bitchez! ');
         }
 
-        $task = new TaskArticle();
-        $form = $this->createForm(TaskArticle::class , $task);
+        //$task = new TaskArticle();
+        $form = $this->createForm(TaskArticle::class , $article);
 
         $form->handleRequest($request);
         
@@ -58,8 +58,6 @@ class ArticleController extends Controller{
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
 
-            $article->setTitle($form->getData()->getTitle());
-            $article->setString( $form->getData()->getDescription() );
 
             /* Test ORM OneToOne / ManyToOne / ManyToMany */
             $doctrineManager->persist($article);
@@ -101,10 +99,9 @@ class ArticleController extends Controller{
     }
     
     public function newAction(Request $request){
-        
-        $task = new TaskArticle();
-        
-        $form = $this->createForm( TaskArticle::class , $task );
+
+        $article =  new Article;
+        $form = $this->createForm( TaskArticle::class , $article );
         
         $form->handleRequest($request);
         
@@ -112,12 +109,6 @@ class ArticleController extends Controller{
             
             $doctrine = $this->getDoctrine();
             $doctrineManager = $doctrine->getManager();
-            
-            $article =  new Article;
-            
-            $article->setTitle($form->getData()->getTitle());
-            $article->setString( $form->getData()->getDescription() );
-
             $username = null;
 
             if($this->getUser()){
@@ -142,18 +133,23 @@ class ArticleController extends Controller{
         return $this->render("@OCArticle/Article/new.html.twig", [ 'form' => $form->createView()]);
     }
     
-    public function indexAction(Request $request){
+    public function indexAction(Request $request, $id=null){
         
         $doctrineManager = $this->getDoctrine()->getManager();
         $repositoryArticle = $doctrineManager->getRepository("OC\ArticleBundle\Entity\Article");
 
         $article = new Article();
-        $articles = $repositoryArticle->findAll();
+
+        if($id == null)
+            $articles = $repositoryArticle->findAll();
+        else
+            $articles = [ $repositoryArticle->find($id) ];
         
         $final="";
         $i = 0;
 
         foreach( $articles as $unit ) {
+            $link = "";
 
             if ($unit->getUser() != null) {
                 $final .= "<h1> " . $unit->getTitle() . " ID: " . $unit->getId() . " User: " . $unit->getUser()->getUsername() . "</h1>";
@@ -163,9 +159,14 @@ class ArticleController extends Controller{
                 if ($unit->getImage() != null)
                     $final .= "<img src='" . $unit->getImage()->getUrl() . "' />";
 
+                if($this->isGranted('ROLE_USER') && $unit->getUser() === $this->getUser()){
+                    $link = '<a href="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/'.$unit->getId().'"> Lien vers larticle! </a>';
+                }
+
                 $final .= '<form methos="GET" action="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/edit/' . $unit->getId() . '">
                             <input type="submit" value="Editer Article" />
-                        </form>';
+                        </form>
+                        '.$link;
             }
         }
         

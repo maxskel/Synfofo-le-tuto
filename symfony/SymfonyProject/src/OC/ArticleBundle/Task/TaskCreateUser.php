@@ -15,8 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class TaskCreateUser extends AbstractType {
-    protected $username;
-    protected $password;
+    public $_username;
+    public $_password;
 
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -26,36 +26,4 @@ class TaskCreateUser extends AbstractType {
             ->add("save" , SubmitType::class);
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
 }
