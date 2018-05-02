@@ -14,7 +14,7 @@ logout:
 
 oc_article_homepage:
     path:     /
-    defaults: { _controller: OCArticleBundle:Default:index }
+    controller: OC\ArticleBundle\Controller\ArticleController::indexAction
 
 oc_article_control:
     path: /article/{id}

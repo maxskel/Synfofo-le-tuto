@@ -1,7 +1,5 @@
 {% extends('@OCArticle/masterDesign.html.twig') %}
 
 {% block body %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+    {{ articles | raw }}
 {% endblock %}

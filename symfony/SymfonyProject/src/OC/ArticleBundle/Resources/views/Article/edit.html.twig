@@ -1,10 +1,7 @@
-{# empty Twig template #}
-<html>
-    <head>
-        
-    </head>
-    
-    <body style="text-align: center; margin: auto;">
+{% extends('@OCArticle/masterDesign.html.twig') %}
+
+{% block body %}
+    <div style="text-align: center; margin: auto;">
         
         {% if app.session.flashBag.has("formValidate") %}
             
@@ -15,6 +12,6 @@
         {{ form_start(form) }}
         {{ form_widget(form) }}
         {{ form_end(form) }}
-    </body>
+    </div>
+{% endblock %}
     
-</html>

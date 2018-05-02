@@ -1,11 +1,6 @@
-{# empty Twig template #}
-<html>
-    <head>
-        
-    </head>
+{% extends('@OCArticle/masterDesign.html.twig') %}
 
-    <body>
-            
+{% block body %}
         {% if error %}
           {# S'il y a une erreur, on l'affiche dans un joli cadre #}
             <div class="alert alert-danger">{{ error.message }}</div>
@@ -22,6 +17,4 @@
             <input type="submit" value="Connexion" />
           </form>
 
-    </body>
-    
-</html>
+{% endblock %}

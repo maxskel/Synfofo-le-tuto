@@ -150,26 +150,29 @@ class ArticleController extends Controller{
 
         foreach( $articles as $unit ) {
             $link = "";
+            $urlEdit = $this->get("router")->generate("oc_article_edit", [ 'id' => $unit->getId() ] );
+            $urlArticle = $this->get("router")->generate("oc_article_control", [ 'id' => $unit->getId() ]);
 
             if ($unit->getUser() != null) {
-                $final .= "<h1> " . $unit->getTitle() . " ID: " . $unit->getId() . " User: " . $unit->getUser()->getUsername() . "</h1>";
 
-                $final .= "<p>" . $unit->getString() . " </p>";
 
                 if ($unit->getImage() != null)
-                    $final .= "<img src='" . $unit->getImage()->getUrl() . "' />";
+                    $final = "<img src='" . $unit->getImage()->getUrl() . "' />".$final;
 
                 if($this->isGranted('ROLE_USER') && $unit->getUser() === $this->getUser()){
-                    $link = '<a href="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/'.$unit->getId().'"> Lien vers larticle! </a>';
+                    $link = '<a href="'.$urlArticle.'"> Lien vers larticle! </a>';
                 }
 
-                $final .= '<form methos="GET" action="http://127.0.0.1/symfony/SymfonyProject/web/app_dev.php/article/edit/' . $unit->getId() . '">
-                            <input type="submit" value="Editer Article" />
-                        </form>
-                        '.$link;
+                $final = "<h1> " . $unit->getTitle() . " ID: " . $unit->getId() . " User: " . $unit->getUser()->getUsername() . "</h1>".
+                    "<p>" . $unit->getString() . " </p>".
+                '<form methos="GET" action="'.$urlEdit.'">
+                    <input type="submit" value="Editer Article" />
+                </form>
+                '.$link.$final;
             }
         }
         
-        return new Response($final);
+       // return new Response($final);
+        return $this->render("@OCArticle/Article/index.html.twig" , [ "articles" => $final]);
     }
 }
